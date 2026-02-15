@@ -1,0 +1,15 @@
+services:
+  postgresql:
+    container_name: postgresql-arquitetura-frontend
+    image: bitnami/postgresql:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRESQL_USER: postgres
+      POSTGRESQL_PASSWORD: postgres
+      POSTGRESQL_DATABASE: rocketseat-arch-frontend
+    volumes:
+      - postgres_data:/bitnami/postgresql
+
+volumes:
+  postgres_data:
