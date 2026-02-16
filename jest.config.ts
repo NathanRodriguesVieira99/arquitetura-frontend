@@ -13,6 +13,7 @@ const config = createJestConfig({
     '/node_modules/',
     '/.next/',
     '/e2e/',
+    '/src/test/utils',
     '/src/components/ui/',
     '/src/lib/',
   ],
