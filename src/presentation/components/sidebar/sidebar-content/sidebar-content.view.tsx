@@ -46,6 +46,7 @@ export const SidebarContentView: FC<
                 </Button>
               </div>
             </div>
+
             <div className="mb-6 flex w-full items-center justify-between">
               <header className="flex w-full items-center justify-between">
                 <Logo />
