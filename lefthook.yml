@@ -15,4 +15,4 @@ pre-push:
       run: pnpm lint
     test:
       glob: '*.{ts,tsx,js,jsx}'
-      run: pnpm test:coverage
+      run: pnpm test:cov
