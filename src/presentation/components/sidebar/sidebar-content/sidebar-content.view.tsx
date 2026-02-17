@@ -6,6 +6,7 @@ import { Button } from '@/presentation/components/ui/button';
 import { ArrowLeftToLine, ArrowRightToLine, Plus, X } from 'lucide-react';
 import { Logo } from '../../logo';
 import { Input } from '../../ui/input';
+import { PromptList } from '../../prompts/prompt-list';
 
 export const SidebarContentView: FC<
   ReturnType<typeof useSidebarContentModel>
@@ -15,6 +16,8 @@ export const SidebarContentView: FC<
   handleCollapseSidebar,
   handleExpandSidebar,
   handleNavigateToNewPromptPage,
+  handleQueryChange,
+  query,
 }) => {
   return (
     <aside
@@ -33,6 +36,16 @@ export const SidebarContentView: FC<
               <ArrowRightToLine size={20} className="text-gray-100" />
             </Button>
           </header>
+
+          <div className="flex flex-col items-center space-y-4">
+            <Button
+              onClick={handleNavigateToNewPromptPage}
+              aria-label="Novo Prompt"
+              title="Novo Prompt"
+            >
+              <Plus size={20} />
+            </Button>
+          </div>
         </section>
       )}
 
@@ -65,6 +78,8 @@ export const SidebarContentView: FC<
             <section className="mb-5">
               <form>
                 <Input
+                  onChange={handleQueryChange}
+                  value={query}
                   placeholder="Buscar prompts..."
                   name="q"
                   type="text"
@@ -85,12 +100,15 @@ export const SidebarContentView: FC<
               </Button>
             </div>
           </section>
+
+          <nav
+            className="flex-1 overflow-auto px-6 pb-6"
+            aria-label="Lista de prompts"
+          >
+            <PromptList prompts={prompts} />
+          </nav>
         </>
       )}
-
-      {prompts.map((prompt, id) => (
-        <p key={id}>{prompt.title}</p>
-      ))}
     </aside>
   );
 };
