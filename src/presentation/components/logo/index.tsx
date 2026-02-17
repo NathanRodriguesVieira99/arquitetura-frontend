@@ -5,7 +5,7 @@ export const Logo = () => {
   return (
     <Link
       href="/"
-      className="hover:text-accent-600 flex items-center gap-2 rounded-lg transition-colors"
+      className="hover:text-accent-600 flex items-center gap-2 rounded-lg text-white transition-colors"
     >
       <MessageSquare />
       <span className="text-lg font-semibold">PROMPTS</span>
