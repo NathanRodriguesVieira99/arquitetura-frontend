@@ -1,14 +1,16 @@
 import { render, screen, userEvent } from '@/test/utils/custom-render';
 import { SidebarContent } from '@/presentation/components/sidebar/sidebar-content/sidebar-content';
-import type { Prompt } from '@/shared/interfaces/prompt';
+import type { PromptSummary } from '@/shared/types/prompt';
 import type { SidebarContentProps } from '@/presentation/components/sidebar/sidebar-content/useSidebarContent.model';
 
 const pushMock = jest.fn();
+let mockSearchParams = new URLSearchParams();
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: pushMock }),
+  useSearchParams: () => mockSearchParams,
 }));
 
-const initialPrompts: Prompt[] = [
+const initialPrompts: PromptSummary[] = [
   { id: '01', title: 'title 01', content: 'content 01' },
 ];
 
@@ -94,6 +96,40 @@ describe('<SidebarContent/>', () => {
       expect(expandButton).toBeVisible();
       expect(collapseButton).not.toBeVisible();
     });
+
+    it('should display new prompt button when sidebar is collapsed', async () => {
+      makeSut();
+
+      const collapseSidebarButton = screen.getByRole('button', {
+        name: 'Fechar menu lateral',
+      });
+
+      await user.click(collapseSidebarButton);
+
+      const newPromptButton = screen.getByRole('button', {
+        name: 'Novo Prompt',
+      });
+
+      await user.click(newPromptButton);
+
+      expect(newPromptButton).toBeVisible();
+    });
+
+    it('should not display prompt list when sidebar is collapsed', async () => {
+      makeSut();
+
+      const collapseSidebarButton = screen.getByRole('button', {
+        name: 'Fechar menu lateral',
+      });
+
+      await user.click(collapseSidebarButton);
+
+      const nav = screen.queryByRole('navigation', {
+        name: 'Lista de prompts',
+      });
+
+      expect(nav).not.toBeInTheDocument();
+    });
   });
 
   describe('Navigation', () => {
@@ -107,6 +143,35 @@ describe('<SidebarContent/>', () => {
       await user.click(newPromptButton);
 
       expect(pushMock).toHaveBeenCalledWith('/new');
+    });
+
+    it('should navigate with encoded URL on type and clear search input', async () => {
+      const inputText = 'A B';
+      makeSut();
+
+      const searchInput = screen.getByPlaceholderText('Buscar prompts...');
+
+      await user.type(searchInput, inputText);
+
+      expect(pushMock).toHaveBeenCalled();
+      const lastCall = pushMock.mock.calls.at(-1);
+      expect(lastCall?.[0]).toBe('/?q=A%20B');
+
+      await user.clear(searchInput);
+      const lastClearCall = pushMock.mock.calls.at(-1);
+      expect(lastClearCall?.[0]).toBe('/');
+    });
+
+    it('should start with the search input with search param', () => {
+      const text = 'initial';
+      const searchParams = new URLSearchParams(`q=${text}`);
+      mockSearchParams = searchParams;
+
+      makeSut();
+
+      const searchInput = screen.getByPlaceholderText('Buscar prompts...');
+
+      expect(searchInput).toHaveValue(text);
     });
   });
 });
